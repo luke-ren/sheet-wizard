@@ -10,5 +10,5 @@ cat <<EOF > .clasp.json
 }
 EOF
 
-cp src/appscript.json dist/src/appscript.json
+cp src/appsscript.json dist/appsscript.json
 cp src/sidebar.html dist/src/sidebar.html

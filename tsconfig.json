@@ -3,7 +3,7 @@
     "target": "ES5",
     "module": "none",
     "rootDir": ".",
-    "outDir": "dist",
+    "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,

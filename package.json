@@ -9,7 +9,7 @@
     "build": "tsc",
     "push": "npx clasp push -f",
     "dev": "npm run build && npm run push",
-    "watch": "nodemon --watch 'src/**/*.ts' --exec 'npm run dev'",
+    "watch": "nodemon --watch src --ext ts,html,json --exec 'npm run dev'",
     "login": "npx clasp login --no-localhost",
     "hash_password": "gpg -o .clasprc.json.gpg --symmetric --cipher-algo AES256 $HOME/.clasprc.json",
     "test": "jest"
