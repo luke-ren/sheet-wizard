@@ -29,11 +29,6 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Setup clasp configuration
-        run: |
-          chmod +x ./prepare.sh
-          ./prepare.sh "${{ secrets.CLASP_SCRIPT_ID }}"
-
       - name: Decrypt clasp credentials
         run: |
           gpg \
@@ -42,8 +37,29 @@ jobs:
             --output $HOME/.clasprc.json .clasprc.json.gpg
           chmod 600 $HOME/.clasprc.json
 
-      - name: Deploy to Apps Script
-        run: npx clasp push -f
+      - name: Deploy to multiple Apps Script projects
+        run: |
+          chmod +x ./prepare.sh
+          
+          # Split comma-separated script IDs into array
+          IFS=',' read -ra SCRIPT_IDS <<< "${{ secrets.CLASP_SCRIPT_IDS }}"
+          
+          # Deploy to each script ID
+          for SCRIPT_ID in "${SCRIPT_IDS[@]}"; do
+            # Trim whitespace
+            SCRIPT_ID=$(echo "$SCRIPT_ID" | xargs)
+            
+            echo "Deploying to script ID: $SCRIPT_ID"
+            
+            # Setup clasp configuration for this script
+            ./prepare.sh "$SCRIPT_ID"
+            
+            # Deploy
+            npx clasp push -f
+            
+            echo "Successfully deployed to $SCRIPT_ID"
+            echo "---"
+          done
 
       - name: Cleanup
         if: always()
