@@ -41,6 +41,16 @@ function showSidebar() {
 }
 
 /**
+ * Serves the documentation web app
+ * This is the entry point for the web app deployment
+ */
+function doGet(e: any) {
+  return HtmlService.createHtmlOutputFromFile('docs')
+    .setTitle('Form Manager Documentation')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+/**
  * Notifies recipients about new entries in tracked sheets
  */
 function NotifyTrackedSheets() {

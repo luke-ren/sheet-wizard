@@ -6,8 +6,6 @@ function onOpen() {
   const ui = SpreadsheetApp.getUi();
   ui.createMenu('Form Manager')
     .addItem('Open Form Manager', 'openSidebar')
-    .addSeparator()
-    .addItem('Refresh', 'refreshFormSheets')
     .addToUi();
 }
 

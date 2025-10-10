@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form Manager Documentation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+    
+    header {
+      background: linear-gradient(135deg, #1a73e8 0%, #34a853 100%);
+      color: white;
+      padding: 60px 40px;
+      text-align: center;
+    }
+    
+    header h1 {
+      font-size: 3em;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    header p {
+      font-size: 1.3em;
+      opacity: 0.95;
+    }
+    
+    .content {
+      padding: 40px;
+    }
+    
+    section {
+      margin-bottom: 50px;
+    }
+    
+    h2 {
+      color: #1a73e8;
+      font-size: 2em;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #34a853;
+    }
+    
+    h3 {
+      color: #333;
+      font-size: 1.5em;
+      margin: 30px 0 15px;
+    }
+    
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 30px;
+    }
+    
+    .feature-card {
+      background: #f8f9fa;
+      padding: 30px;
+      border-radius: 8px;
+      border-left: 4px solid #1a73e8;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .feature-card h3 {
+      margin-top: 0;
+      color: #1a73e8;
+    }
+    
+    .feature-icon {
+      font-size: 2.5em;
+      margin-bottom: 15px;
+    }
+    
+    ul {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+    
+    li {
+      margin-bottom: 10px;
+      line-height: 1.8;
+    }
+    
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      color: #d63384;
+    }
+    
+    .cta {
+      background: linear-gradient(135deg, #1a73e8 0%, #34a853 100%);
+      color: white;
+      padding: 40px;
+      text-align: center;
+      border-radius: 8px;
+      margin-top: 40px;
+    }
+    
+    .cta h2 {
+      color: white;
+      border: none;
+      margin-bottom: 20px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background: white;
+      color: #1a73e8;
+      padding: 15px 40px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1em;
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin: 10px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    footer {
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+    }
+    
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2em;
+      }
+      
+      .content {
+        padding: 20px;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📋 Form Manager</h1>
+      <p>Smart form management and intelligent email notifications for Google Sheets</p>
+    </header>
+    
+    <div class="content">
+      <section>
+        <h2>Overview</h2>
+        <p>Form Manager is a powerful Google Workspace add-on that streamlines form management and provides intelligent email notifications for new form responses. Designed for internal deployment within your organization.</p>
+      </section>
+      
+      <section>
+        <h2>Key Features</h2>
+        <div class="features">
+          <div class="feature-card">
+            <div class="feature-icon">🚀</div>
+            <h3>Quick Form Creation</h3>
+            <ul>
+              <li>Create Google Forms directly from your spreadsheet</li>
+              <li>Instant form link generation (2-3 seconds)</li>
+              <li>Automatic sheet creation and renaming</li>
+            </ul>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">📧</div>
+            <h3>Smart Notifications</h3>
+            <ul>
+              <li>No-reply email alerts for new responses</li>
+              <li>Configurable intervals (5min to 24hr)</li>
+              <li>Time window controls (business hours)</li>
+              <li>Beautiful HTML email formatting</li>
+            </ul>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">⚙️</div>
+            <h3>Flexible Configuration</h3>
+            <ul>
+              <li>Per-form notification settings</li>
+              <li>Multiple notification intervals</li>
+              <li>Manual "Send Now" button</li>
+              <li>Visual bell icon status indicators</li>
+            </ul>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Intelligent Tracking</h3>
+            <ul>
+              <li>Only notifies about NEW entries</li>
+              <li>JSON-based entry comparison</li>
+              <li>Prevents duplicate notifications</li>
+              <li>Per-sheet timestamp tracking</li>
+            </ul>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">👥</div>
+            <h3>Multi-User Support</h3>
+            <ul>
+              <li>Global tick system (single trigger)</li>
+              <li>No permission conflicts</li>
+              <li>Any user can enable/disable</li>
+              <li>Consistent email delivery</li>
+            </ul>
+          </div>
+          
+          <div class="feature-card">
+            <div class="feature-icon">⏰</div>
+            <h3>Smart Scheduling</h3>
+            <ul>
+              <li>Notifications aligned to interval boundaries</li>
+              <li>24hr interval at configured start hour</li>
+              <li>Respects time windows</li>
+              <li>Efficient single-trigger architecture</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      
+      <section>
+        <h2>How It Works</h2>
+        <h3>1. Create a Form</h3>
+        <p>Open the Form Manager sidebar, enter a form name, and click "Create Linked Form". Your form is ready in seconds!</p>
+        
+        <h3>2. Configure Notifications</h3>
+        <p>Add email recipients, choose your notification interval (5min, 15min, 30min, 1hr, 2hr, or 24hr), and set your time window.</p>
+        
+        <h3>3. Enable & Relax</h3>
+        <p>Toggle notifications ON and let Form Manager handle the rest. You'll receive beautiful HTML emails whenever new responses arrive.</p>
+      </section>
+      
+      <section>
+        <h2>Notification Intervals</h2>
+        <p>All notifications are aligned to interval boundaries starting from your configured start hour:</p>
+        <ul>
+          <li><code>5min</code> - Every 5 minutes (e.g., 9:00, 9:05, 9:10...)</li>
+          <li><code>15min</code> - Every 15 minutes (e.g., 9:00, 9:15, 9:30...)</li>
+          <li><code>30min</code> - Every 30 minutes (e.g., 9:00, 9:30, 10:00...)</li>
+          <li><code>1hr</code> - Every hour (e.g., 9:00, 10:00, 11:00...) - <strong>recommended</strong></li>
+          <li><code>2hr</code> - Every 2 hours (e.g., 8:00, 10:00, 12:00...)</li>
+          <li><code>24hr</code> - Once per day at start hour (e.g., always at 9:00 AM)</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>Getting Started</h2>
+        <ol>
+          <li>Install the Form Manager add-on</li>
+          <li>Open any Google Sheet</li>
+          <li>Click <strong>Form Manager</strong> in the menu bar</li>
+          <li>Click <strong>Open Form Manager</strong></li>
+          <li>Start creating forms and setting up notifications!</li>
+        </ol>
+      </section>
+      
+      <div class="cta">
+        <h2>Ready to Get Started?</h2>
+        <p style="margin-bottom: 20px;">Install Form Manager and streamline your form management today!</p>
+        <a href="https://github.com/luke-ren/form-manager" class="btn" target="_blank">View on GitHub</a>
+      </div>
+    </div>
+    
+    <footer>
+      <p>&copy; 2024 Form Manager | Built for Google Workspace</p>
+    </footer>
+  </div>
+</body>
+</html>
