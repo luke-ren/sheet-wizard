@@ -20,6 +20,14 @@ function openSidebar(): void {
 }
 
 /**
+ * Refreshes the form sheets list (for universal action)
+ * Returns the current list of form sheets
+ */
+function refreshFormSheets(): FormSheetInfo[] {
+  return getFormSheets();
+}
+
+/**
  * Creates default config for a sheet
  */
 function createDefaultConfig(sheetId: number, overrides: Partial<SheetNotificationConfig> = {}): SheetNotificationConfig {
