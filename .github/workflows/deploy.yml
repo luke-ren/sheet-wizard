@@ -42,7 +42,7 @@ jobs:
           chmod +x ./prepare.sh
           
           # Split comma-separated script IDs into array
-          IFS=',' read -ra SCRIPT_IDS <<< "${{ secrets.CLASP_SCRIPT_IDS }}"
+          IFS=',' read -ra SCRIPT_IDS <<< "${{ env.CLASP_SCRIPT_IDS }}"
           
           # Deploy to each script ID
           for SCRIPT_ID in "${SCRIPT_IDS[@]}"; do
