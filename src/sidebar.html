@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f8f9fa;
+      min-height: 100vh;
+      color: #212529;
+      font-size: 14px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #1a73e8;
+    }
+
+    .subtitle {
+      color: #5f6368;
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px 20px;
+      color: #5f6368;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #1a73e8;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .form-sheet-card {
+      background: white;
+      border: none;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+
+    .form-sheet-card:hover {
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .form-card-header {
+      padding: 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+
+    .form-card-header:hover {
+      background: #f8f9fa;
+    }
+
+    .form-card-header-left {
+      flex: 1;
+    }
+
+    .collapse-icon {
+      font-size: 20px;
+      color: #5f6368;
+      transition: transform 0.3s ease;
+      margin-left: 8px;
+      font-weight: normal;
+      line-height: 1;
+    }
+
+    .collapse-icon.expanded {
+      transform: rotate(90deg);
+    }
+
+    .send-now-btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 16px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .send-now-btn:hover {
+      background: #1557b0;
+    }
+
+    .send-now-btn:disabled {
+      background: #dadce0;
+      color: #5f6368;
+      cursor: not-allowed;
+    }
+
+    .send-now-status {
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .send-now-status.sending {
+      background: #e8f0fe;
+      color: #1967d2;
+    }
+
+    .send-now-status.success {
+      background: #e6f4ea;
+      color: #137333;
+    }
+
+    .send-now-status.error {
+      background: #fce8e6;
+      color: #c5221f;
+    }
+
+
+    .form-card-content {
+      padding: 0 16px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+
+    .form-card-content.expanded {
+      max-height: 1000px;
+      padding: 0 16px 16px 16px;
+    }
+
+    .form-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .form-title a {
+      color: #1a73e8;
+      text-decoration: none;
+    }
+
+    .form-title a:hover {
+      text-decoration: underline;
+    }
+
+    .sheet-name {
+      color: #5f6368;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .notification-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding: 8px;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+
+    .toggle-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #202124;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #1a73e8;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    input:disabled + .slider {
+      background-color: #e0e0e0;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    input:disabled:checked + .slider {
+      background-color: #9aa0a6;
+    }
+
+    .email-input-group {
+      margin-top: 12px;
+    }
+
+    .email-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #5f6368;
+      margin-bottom: 6px;
+    }
+
+    .email-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    .email-input:focus {
+      outline: none;
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+    }
+
+    .email-input::placeholder {
+      color: #9aa0a6;
+    }
+
+    .save-btn {
+      margin-top: 8px;
+      padding: 6px 16px;
+      background: #1a73e8;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .save-btn:hover {
+      background: #1557b0;
+    }
+
+    .save-btn:active {
+      background: #0d47a1;
+    }
+
+    .save-btn:disabled {
+      background: #dadce0;
+      color: #9aa0a6;
+      cursor: not-allowed;
+    }
+
+    .status-message {
+      font-size: 12px;
+      margin-top: 6px;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    .status-success {
+      color: #137333;
+      background: #e6f4ea;
+    }
+
+    .status-error {
+      color: #c5221f;
+      background: #fce8e6;
+    }
+
+    .status-updating {
+      color: #b45309;
+      background: #fef3c7;
+    }
+
+    .status-warning {
+      color: #ea580c;
+      background: #ffedd5;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #5f6368;
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .setting-row {
+      margin-bottom: 12px;
+    }
+
+    .setting-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #5f6368;
+      margin-bottom: 6px;
+    }
+
+    .select-input, .time-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+      background: white;
+      transition: border-color 0.2s;
+    }
+
+    .select-input:focus, .time-input:focus {
+      outline: none;
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+    }
+
+    .time-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .header-controls {
+      margin-bottom: 24px;
+    }
+
+    .last-updated {
+      font-size: 11px;
+      color: #9aa0a6;
+      margin-top: 8px;
+    }
+
+    .create-form-section {
+      background: white;
+      border: none;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .create-form-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #202124;
+      margin-bottom: 12px;
+    }
+
+    .form-name-input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+      background: white;
+      transition: border-color 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .form-name-input:focus {
+      outline: none;
+      border-color: #1a73e8;
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.1);
+    }
+
+    .create-form-btn {
+      width: 100%;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, #1a73e8 0%, #4285f4 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(26, 115, 232, 0.4);
+    }
+
+    .create-form-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(26, 115, 232, 0.5);
+    }
+
+    .create-form-btn:disabled {
+      background: #dadce0;
+      color: #9aa0a6;
+      cursor: not-allowed;
+    }
+
+    .create-form-status {
+      margin-top: 8px;
+      font-size: 12px;
+      padding: 8px;
+      border-radius: 4px;
+      display: none;
+    }
+
+    .create-form-status.success {
+      background: #e6f4ea;
+      color: #137333;
+      display: block;
+    }
+
+    .create-form-status.error {
+      background: #fce8e6;
+      color: #c5221f;
+      display: block;
+    }
+
+    .create-form-status.creating {
+      background: #fef7e0;
+      color: #b06000;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-controls">
+    <h1>Form Manager</h1>
+        <p class="subtitle">Manage forms and notifications</p>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 8px;">
+      <div class="last-updated" id="last-updated"></div>
+      <button id="refresh-btn" onclick="handleRefreshUI()" style="padding: 6px 12px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500;">
+        Refresh UI
+      </button>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+
+  <div id="content" style="display: none;">
+    <div class="create-form-section">
+      <div class="create-form-title">Create New Form</div>
+      <input 
+        type="text" 
+        class="form-name-input" 
+        id="new-form-name" 
+        placeholder="Enter form name (e.g., 30-Second Survey)"
+      >
+      <button class="create-form-btn" id="create-form-btn" onclick="handleCreateForm()">
+        Create Linked Form
+      </button>
+      <div class="create-form-status" id="create-form-status"></div>
+    </div>
+    
+    <div id="form-sheets-container"></div>
+  </div>
+
+  <script>
+    let autoRefreshInterval = null;
+    const AUTO_REFRESH_MINUTES = 1;
+    let expandedCards = new Set(); // Track which cards are expanded
+
+    // Load data on page load
+    function loadFormSheets() {
+      google.script.run
+        .withSuccessHandler((formSheets) => {
+          renderFormSheets(formSheets);
+          updateLastRefreshed();
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('content').style.display = 'block';
+        })
+        .withFailureHandler(showError)
+        .getFormSheets();
+    }
+
+    function refreshFormSheets(showRefreshing = false) {
+      if (showRefreshing) {
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+          refreshBtn.textContent = 'Refreshing...';
+          refreshBtn.disabled = true;
+        }
+      }
+      
+      google.script.run
+        .withSuccessHandler((formSheets) => {
+          renderFormSheets(formSheets);
+          updateLastRefreshed();
+          
+          if (showRefreshing) {
+            const refreshBtn = document.getElementById('refresh-btn');
+            if (refreshBtn) {
+              refreshBtn.textContent = 'Refresh UI';
+              refreshBtn.disabled = false;
+            }
+          }
+        })
+        .withFailureHandler((error) => {
+          console.error('Auto-refresh failed:', error);
+          
+          if (showRefreshing) {
+            const refreshBtn = document.getElementById('refresh-btn');
+            if (refreshBtn) {
+              refreshBtn.textContent = 'Refresh UI';
+              refreshBtn.disabled = false;
+            }
+          }
+        })
+        .getFormSheets();
+    }
+    
+    function handleRefreshUI() {
+      refreshFormSheets(true);
+    }
+
+    function updateLastRefreshed() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-US', { 
+        hour: 'numeric', 
+        minute: '2-digit',
+        hour12: true 
+      });
+      document.getElementById('last-updated').textContent = `Last updated: ${timeString}`;
+    }
+
+    function startAutoRefresh() {
+      // Clear any existing interval
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+      }
+      
+      // Set up auto-refresh every N minutes
+      autoRefreshInterval = setInterval(() => {
+        console.log('Auto-refreshing form sheets...');
+        refreshFormSheets(true);
+      }, AUTO_REFRESH_MINUTES * 60 * 1000);
+    }
+
+    // Initial load
+    loadFormSheets();
+    
+    // Start auto-refresh
+    startAutoRefresh();
+
+    function formatHourDisplay(hour) {
+      if (hour === 0) return '12:00 AM';
+      if (hour === 12) return '12:00 PM';
+      if (hour < 12) return `${hour}:00 AM`;
+      return `${hour - 12}:00 PM`;
+    }
+
+
+    function updateSheetTimeDisplay(sheetId) {
+      const startHour = parseInt(document.getElementById(`start-hour-${sheetId}`).value);
+      const endHour = parseInt(document.getElementById(`end-hour-${sheetId}`).value);
+      
+      if (!isNaN(startHour) && startHour >= 0 && startHour <= 23) {
+        document.getElementById(`start-hour-display-${sheetId}`).textContent = formatHourDisplay(startHour);
+      }
+      if (!isNaN(endHour) && endHour >= 0 && endHour <= 23) {
+        document.getElementById(`end-hour-display-${sheetId}`).textContent = formatHourDisplay(endHour);
+      }
+    }
+
+    function handleSheetSettingsChange(sheetId) {
+      showStatus(sheetId, 'Unsaved Changes', 'warning');
+    }
+
+    function toggleFormCard(sheetId) {
+      const content = document.getElementById(`content-${sheetId}`);
+      const icon = document.getElementById(`icon-${sheetId}`);
+      
+      if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        icon.classList.remove('expanded');
+        expandedCards.delete(sheetId);
+      } else {
+        content.classList.add('expanded');
+        icon.classList.add('expanded');
+        expandedCards.add(sheetId);
+      }
+    }
+
+    function updateBellIcon(sheetId, enabled) {
+      const card = document.querySelector(`.form-sheet-card[data-sheet-id="${sheetId}"]`);
+      if (!card) return;
+      
+      const bellIcon = card.querySelector('.form-title svg');
+      if (bellIcon) {
+        // Update the stroke color based on enabled state
+        bellIcon.setAttribute('stroke', enabled ? '#34a853' : '#dadce0');
+        bellIcon.setAttribute('title', enabled ? 'Notifications enabled' : 'Notifications disabled');
+      }
+    }
+
+
+    function renderFormSheets(formSheets) {
+      const container = document.getElementById('form-sheets-container');
+
+      if (formSheets.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <p><strong>No form-connected sheets found</strong></p>
+            <p style="margin-top: 8px; font-size: 13px;">Connect a Google Form to a sheet to enable notifications.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = formSheets.map(sheet => {
+        const isExpanded = expandedCards.has(sheet.sheetId);
+        const bellIcon = sheet.notificationsEnabled 
+          ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34a853" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;" title="Notifications enabled"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>'
+          : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dadce0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; vertical-align: middle;" title="Notifications disabled"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>';
+        
+        return `
+        <div class="form-sheet-card" data-sheet-id="${sheet.sheetId}">
+          <div class="form-card-header" onclick="toggleFormCard(${sheet.sheetId})">
+            <div class="form-card-header-left">
+              <div class="form-title">
+                ${bellIcon}<a href="${sheet.formEditUrl}" target="_blank" onclick="event.stopPropagation()">${escapeHtml(sheet.sheetName)}</a>
+              </div>
+            </div>
+            <span class="collapse-icon ${isExpanded ? 'expanded' : ''}" id="icon-${sheet.sheetId}">›</span>
+          </div>
+
+          <div class="form-card-content ${isExpanded ? 'expanded' : ''}" id="content-${sheet.sheetId}">
+            <div class="email-input-group">
+            <label class="email-label">Notification Recipients</label>
+            <input 
+              type="text" 
+              class="email-input" 
+              placeholder="email1@example.com, email2@example.com"
+              value="${sheet.emailRecipients.join(', ')}"
+              id="emails-${sheet.sheetId}"
+              oninput="handleSheetSettingsChange(${sheet.sheetId})"
+            >
+          </div>
+
+          <div class="setting-row" style="margin-top: 12px;">
+            <label class="setting-label">Notification Interval</label>
+            <select class="select-input" id="interval-${sheet.sheetId}" onchange="handleSheetSettingsChange(${sheet.sheetId})">
+              <option value="5min" ${sheet.interval === '5min' ? 'selected' : ''}>Every 5 minutes</option>
+              <option value="15min" ${sheet.interval === '15min' ? 'selected' : ''}>Every 15 minutes</option>
+              <option value="30min" ${sheet.interval === '30min' ? 'selected' : ''}>Every 30 minutes</option>
+              <option value="1hr" ${sheet.interval === '1hr' ? 'selected' : ''}>Every hour</option>
+              <option value="2hr" ${sheet.interval === '2hr' ? 'selected' : ''}>Every 2 hours</option>
+              <option value="24hr" ${sheet.interval === '24hr' ? 'selected' : ''}>Every 24 hours</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <label class="setting-label">Active Hours</label>
+            <div class="time-row">
+              <div>
+                <label class="setting-label" style="margin-bottom: 4px;">Start</label>
+                <input type="number" class="time-input" id="start-hour-${sheet.sheetId}" 
+                  min="0" max="23" value="${sheet.startHour}" placeholder="0-23"
+                  oninput="handleSheetSettingsChange(${sheet.sheetId}); updateSheetTimeDisplay(${sheet.sheetId})">
+                <div style="font-size: 11px; color: #5f6368; margin-top: 2px;" id="start-hour-display-${sheet.sheetId}">${formatHourDisplay(sheet.startHour)}</div>
+              </div>
+              <div>
+                <label class="setting-label" style="margin-bottom: 4px;">End</label>
+                <input type="number" class="time-input" id="end-hour-${sheet.sheetId}" 
+                  min="0" max="23" value="${sheet.endHour}" placeholder="0-23"
+                  oninput="handleSheetSettingsChange(${sheet.sheetId}); updateSheetTimeDisplay(${sheet.sheetId})">
+                <div style="font-size: 11px; color: #5f6368; margin-top: 2px;" id="end-hour-display-${sheet.sheetId}">${formatHourDisplay(sheet.endHour)}</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="save-btn" onclick="handleSaveSheetSettings(${sheet.sheetId})">
+            Save Settings
+          </button>
+
+          <div id="status-${sheet.sheetId}" class="status-message" style="display: none;"></div>
+          
+          <div class="notification-toggle" style="margin-top: 16px;">
+            <span class="toggle-label">Enable Notifications</span>
+            <label class="toggle-switch">
+              <input 
+                type="checkbox" 
+                ${sheet.notificationsEnabled ? 'checked' : ''}
+                onchange="handleToggle(${sheet.sheetId}, this.checked)"
+                id="toggle-${sheet.sheetId}"
+              >
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <button class="send-now-btn" onclick="handleSendNotificationsNow(${sheet.sheetId})" id="send-now-btn-${sheet.sheetId}">
+            Send Notifications Now
+          </button>
+          <div id="send-now-status-${sheet.sheetId}" class="send-now-status" style="display: none;"></div>
+          </div>
+        </div>
+      `;
+      }).join('');
+    }
+
+
+    function handleToggle(sheetId, enabled) {
+      // If enabling, validate that recipients exist
+      if (enabled) {
+        const emailsString = document.getElementById(`emails-${sheetId}`).value.trim();
+        if (!emailsString || emailsString.length === 0) {
+          showStatus(sheetId, 'Must have at least one recipient email.', 'error');
+          // Uncheck the toggle
+          document.getElementById(`toggle-${sheetId}`).checked = false;
+          return;
+        }
+      }
+
+      // Show updating status immediately
+      showStatus(sheetId, 'Updating...', 'updating');
+      
+      google.script.run
+        .withSuccessHandler(() => {
+          // Update the bell icon
+          updateBellIcon(sheetId, enabled);
+          showStatus(sheetId, 'Notifications ' + (enabled ? 'enabled' : 'disabled'), 'success');
+        })
+        .withFailureHandler(() => {
+          showStatus(sheetId, 'Failed to update notifications', 'error');
+          // Revert toggle on failure
+          document.getElementById(`toggle-${sheetId}`).checked = !enabled;
+        })
+        .toggleNotifications(sheetId, enabled);
+    }
+
+    function handleSaveSheetSettings(sheetId) {
+      const emailsString = document.getElementById(`emails-${sheetId}`).value.trim();
+      const interval = document.getElementById(`interval-${sheetId}`).value;
+      const startHour = parseInt(document.getElementById(`start-hour-${sheetId}`).value);
+      const endHour = parseInt(document.getElementById(`end-hour-${sheetId}`).value);
+
+      // Validate hours
+      if (isNaN(startHour) || isNaN(endHour) || startHour < 0 || startHour > 23 || endHour < 0 || endHour > 23) {
+        showStatus(sheetId, 'Invalid hours. Please enter values between 0-23.', 'error');
+        return;
+      }
+
+      if (endHour <= startHour) {
+        showStatus(sheetId, 'End hour must be after start hour.', 'error');
+        return;
+      }
+
+      // Show saving status immediately
+      showStatus(sheetId, 'Saving...', 'updating');
+
+      // Save both emails and settings
+      google.script.run
+        .withSuccessHandler(() => {
+          // Now save the notification settings
+          google.script.run
+            .withSuccessHandler(() => {
+              showStatus(sheetId, 'Settings saved successfully', 'success');
+              // Refresh trigger to use new intervals
+              google.script.run.setupNotificationTrigger();
+            })
+            .withFailureHandler(() => {
+              showStatus(sheetId, 'Failed to save settings', 'error');
+            })
+            .updateSheetNotificationSettings(sheetId, interval, startHour, endHour);
+        })
+        .withFailureHandler(() => {
+          showStatus(sheetId, 'Failed to save recipients', 'error');
+        })
+        .updateEmailRecipients(sheetId, emailsString);
+    }
+
+    function showStatus(sheetId, message, type) {
+      const statusEl = document.getElementById(`status-${sheetId}`);
+      statusEl.textContent = message;
+      statusEl.className = `status-message status-${type}`;
+      statusEl.style.display = 'block';
+      
+      // Only auto-hide success and error messages
+      if (type === 'success' || type === 'error') {
+        setTimeout(() => {
+          statusEl.style.display = 'none';
+        }, 3000);
+      }
+      // Warning and updating messages stay until replaced
+    }
+
+    function showError(error) {
+      const loadingEl = document.getElementById('loading');
+      loadingEl.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">⚠️</div>
+          <p><strong>Error loading form sheets</strong></p>
+          <p style="margin-top: 8px; font-size: 13px;">${escapeHtml(error.message)}</p>
+          <button class="refresh-btn" onclick="location.reload()" style="margin-top: 16px;">
+            <span>Retry</span>
+          </button>
+        </div>
+      `;
+    }
+
+    function handleCreateForm() {
+      const formNameInput = document.getElementById('new-form-name');
+      const formName = formNameInput.value.trim();
+      const createBtn = document.getElementById('create-form-btn');
+      const statusEl = document.getElementById('create-form-status');
+
+      // Validate form name
+      if (!formName || formName.length === 0) {
+        statusEl.className = 'create-form-status error';
+        statusEl.textContent = 'Please enter a form name.';
+        return;
+      }
+
+      // Disable button and show creating status
+      createBtn.disabled = true;
+      statusEl.className = 'create-form-status creating';
+      statusEl.textContent = 'Creating form...';
+
+      // Step 1: Create the form quickly and get the URL
+      google.script.run
+        .withSuccessHandler((result) => {
+          // Form created! Show clickable link
+          if (result.formUrl) {
+            statusEl.className = 'create-form-status success';
+            statusEl.innerHTML = `✓ Form created! <a href="${result.formUrl}" target="_blank" style="color: #1a73e8; font-weight: 600; text-decoration: underline;">Click here to open form</a>`;
+          }
+          
+          formNameInput.value = '';
+          createBtn.disabled = false;
+          
+          // Step 2: Rename the sheet in the background
+          google.script.run
+            .withSuccessHandler((renameResult) => {
+              statusEl.textContent = `✓ Form "${formName}" ready!`;
+              console.log(`Sheet renamed to: ${renameResult.sheetName}`);
+              
+              // Refresh the form list
+              refreshFormSheets();
+              
+              // Hide status message after a delay
+              setTimeout(() => {
+                statusEl.style.display = 'none';
+              }, 3000);
+            })
+            .withFailureHandler((error) => {
+              console.error('Sheet rename failed:', error);
+              statusEl.textContent = `✓ Form created (sheet rename pending)`;
+              
+              // Still refresh the list
+              refreshFormSheets();
+              
+              setTimeout(() => {
+                statusEl.style.display = 'none';
+              }, 3000);
+            })
+            .renameFormSheet(result.formId, formName);
+        })
+        .withFailureHandler((error) => {
+          statusEl.className = 'create-form-status error';
+          statusEl.textContent = `Error: ${error.message}`;
+          createBtn.disabled = false;
+        })
+        .createFormQuick(formName);
+    }
+
+
+    function handleSendNotificationsNow(sheetId) {
+      const button = document.getElementById(`send-now-btn-${sheetId}`);
+      const statusEl = document.getElementById(`send-now-status-${sheetId}`);
+      
+      // Disable button and show sending status
+      button.disabled = true;
+      statusEl.style.display = 'block';
+      statusEl.className = 'send-now-status sending';
+      statusEl.textContent = 'Sending notifications...';
+      
+      google.script.run
+        .withSuccessHandler((result) => {
+          button.disabled = false;
+          statusEl.className = 'send-now-status success';
+          
+          if (result.sent) {
+            statusEl.textContent = `✓ Sent ${result.count} notification${result.count === 1 ? '' : 's'} to ${result.recipients} recipient${result.recipients === 1 ? '' : 's'}`;
+          } else {
+            statusEl.textContent = result.message || 'No new entries to notify';
+          }
+          
+          // Hide status after 5 seconds
+          setTimeout(() => {
+            statusEl.style.display = 'none';
+          }, 5000);
+        })
+        .withFailureHandler((error) => {
+          button.disabled = false;
+          statusEl.className = 'send-now-status error';
+          statusEl.textContent = `Error: ${error.message}`;
+          
+          // Hide status after 5 seconds
+          setTimeout(() => {
+            statusEl.style.display = 'none';
+          }, 5000);
+        })
+        .sendNotificationsManually(sheetId);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

@@ -9,6 +9,3 @@ cat <<EOF > .clasp.json
   "rootDir": "dist"
 }
 EOF
-
-cp src/appsscript.json dist/appsscript.json
-cp src/sidebar.html dist/src/sidebar.html

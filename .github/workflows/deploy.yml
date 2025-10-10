@@ -1,0 +1,50 @@
+name: Deploy to Google Apps Script
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: main
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install clasp globally
+        run: npm install -g @google/clasp
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Setup clasp configuration
+        run: |
+          chmod +x ./prepare.sh
+          ./prepare.sh "${{ secrets.CLASP_SCRIPT_ID }}"
+
+      - name: Decrypt clasp credentials
+        run: |
+          gpg \
+            --quiet --batch --yes \
+            --decrypt --passphrase="${{ secrets.CLASP_SECRET }}" \
+            --output $HOME/.clasprc.json .clasprc.json.gpg
+          chmod 600 $HOME/.clasprc.json
+
+      - name: Deploy to Apps Script
+        run: npx clasp push -f
+
+      - name: Cleanup
+        if: always()
+        run: rm -f $HOME/.clasprc.json
