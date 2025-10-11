@@ -13,7 +13,7 @@ type FormSheetInfo = {
  * Opens the sidebar
  */
 function openSidebar(): void {
-  const html = HtmlService.createHtmlOutputFromFile("src/sidebar")
+  const html = HtmlService.createHtmlOutputFromFile("sidebar")
     .setTitle("Form Notifications Manager")
     .setWidth(400);
   SpreadsheetApp.getUi().showSidebar(html);
