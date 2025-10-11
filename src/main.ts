@@ -45,7 +45,7 @@ function showSidebar() {
  * This is the entry point for the web app deployment
  */
 function doGet(e: any) {
-  return HtmlService.createHtmlOutputFromFile('docs')
+  return HtmlService.createHtmlOutputFromFile('src/docs')
     .setTitle('Form Manager Documentation')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
