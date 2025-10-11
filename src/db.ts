@@ -22,7 +22,7 @@ type GlobalNotificationSettings = {
  * Gets previously saved entries for a sheet
  */
 function getSavedEntries(sheetId: number): any[][] {
-  const properties = PropertiesService.getScriptProperties();
+  const properties = PropertiesService.getDocumentProperties();
   const savedEntriesKey = `${FORM_MANAGER_PREFIX}saved_entries_${sheetId}`;
   const savedEntriesJson = properties.getProperty(savedEntriesKey);
   return savedEntriesJson ? JSON.parse(savedEntriesJson) : [];
@@ -32,7 +32,7 @@ function getSavedEntries(sheetId: number): any[][] {
  * Saves entries for a sheet
  */
 function saveEntries(sheetId: number, entries: any[][]): void {
-  const properties = PropertiesService.getScriptProperties();
+  const properties = PropertiesService.getDocumentProperties();
   const savedEntriesKey = `${FORM_MANAGER_PREFIX}saved_entries_${sheetId}`;
   properties.setProperty(savedEntriesKey, JSON.stringify(entries));
   console.log(`Saved ${entries.length} entries for sheet ID ${sheetId}`);
@@ -42,7 +42,7 @@ function saveEntries(sheetId: number, entries: any[][]): void {
  * Gets notification configuration for a specific sheet
  */
 function getSheetNotificationConfig(sheetId: number): SheetNotificationConfig | null {
-  const properties = PropertiesService.getScriptProperties();
+  const properties = PropertiesService.getDocumentProperties();
   const configKey = `${FORM_MANAGER_PREFIX}notification_config_${sheetId}`;
   const configJson = properties.getProperty(configKey);
   
@@ -64,7 +64,7 @@ function getSheetNotificationConfig(sheetId: number): SheetNotificationConfig | 
  * Saves notification configuration for a specific sheet
  */
 function saveSheetNotificationConfig(config: SheetNotificationConfig): void {
-  const properties = PropertiesService.getScriptProperties();
+  const properties = PropertiesService.getDocumentProperties();
   const configKey = `${FORM_MANAGER_PREFIX}notification_config_${config.sheetId}`;
   properties.setProperty(configKey, JSON.stringify(config));
 }
@@ -73,7 +73,7 @@ function saveSheetNotificationConfig(config: SheetNotificationConfig): void {
  * Gets all sheet notification configurations
  */
 function getAllSheetNotificationConfigs(): SheetNotificationConfig[] {
-  const properties = PropertiesService.getScriptProperties();
+  const properties = PropertiesService.getDocumentProperties();
   const allProps = properties.getProperties();
   const configs: SheetNotificationConfig[] = [];
   
@@ -91,7 +91,7 @@ function getAllSheetNotificationConfigs(): SheetNotificationConfig[] {
  * Deletes notification configuration for a specific sheet
  */
 function deleteSheetNotificationConfig(sheetId: number): void {
-  const properties = PropertiesService.getScriptProperties();
+  const properties = PropertiesService.getDocumentProperties();
   const configKey = `${FORM_MANAGER_PREFIX}notification_config_${sheetId}`;
   properties.deleteProperty(configKey);
 }
@@ -100,7 +100,7 @@ function deleteSheetNotificationConfig(sheetId: number): void {
  * Gets global notification settings
  */
 function getGlobalNotificationSettings(): GlobalNotificationSettings {
-  const properties = PropertiesService.getScriptProperties();
+  const properties = PropertiesService.getDocumentProperties();
   const settingsKey = `${FORM_MANAGER_PREFIX}global_settings`;
   const settingsJson = properties.getProperty(settingsKey);
   
@@ -120,7 +120,7 @@ function getGlobalNotificationSettings(): GlobalNotificationSettings {
  * Saves global notification settings
  */
 function saveGlobalNotificationSettings(settings: GlobalNotificationSettings): void {
-  const properties = PropertiesService.getScriptProperties();
+  const properties = PropertiesService.getDocumentProperties();
   const settingsKey = `${FORM_MANAGER_PREFIX}global_settings`;
   properties.setProperty(settingsKey, JSON.stringify(settings));
 }
